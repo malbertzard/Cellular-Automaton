@@ -1,3 +1,3 @@
-module smooth-life
+module cellular-autometon
 
 go 1.20
