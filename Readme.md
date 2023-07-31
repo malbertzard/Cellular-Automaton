@@ -49,6 +49,9 @@ go build
 
 7. An SVG animation will be generated and saved to the output directory upon completion of the simulation.
 
+
+![animation](./animation.svg)
+
 ## Available Simulation Types
 
 1. **SmoothLife**: A continuous variant of Conway's Game of Life that allows for smoother transitions between cell states.

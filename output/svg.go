@@ -54,6 +54,13 @@ func (s SVGOutput) GenerateSVGAnimation(gridHistory [][][]float64, config common
 		}
 
 		frame += "</g>"
+
+		// Set a shorter duration for smoother animation
+		duration := 100 // 100 milliseconds
+
+		// Add the animate element to loop the frames seamlessly with shorter duration
+		frame += fmt.Sprintf(`<animate attributeName="display" from="none" to="inline" begin="%dms" dur="%dms" repeatCount="indefinite" />`, frameIndex*100, duration)
+
 		svgFrames += frame
 	}
 
@@ -63,12 +70,13 @@ func (s SVGOutput) GenerateSVGAnimation(gridHistory [][][]float64, config common
 	// Combine the header, frames, and footer to complete the SVG code
 	svgCode := svgHeader + svgFrames + svgFooter
 
-	// Save the SVG code to a file named "animation.svg"
+	// Save the minified SVG code to a file named "animation.svg"
 	err := os.WriteFile("animation.svg", []byte(svgCode), 0644)
 	if err != nil {
 		fmt.Println("Error writing SVG animation to file:", err)
 		return
 	}
 
-	fmt.Println("SVG animation generated. Check 'animation.svg' in the current directory.")
+	fmt.Println("SVG animation generated and optimized. Check 'animation.svg' in the current directory.")
 }
+
