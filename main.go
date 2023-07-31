@@ -31,7 +31,7 @@ func main() {
 	// Create a map to associate simulation types with their constructor functions
 	simulationTypes := map[string]simulation.SimulationType{
 		"SmoothLife": simulation.SmoothLifeSimulationType{},
-		"Conway": simulation.ConwaySimulationType{},
+		"Conway":     simulation.ConwaySimulationType{},
 	}
 
 	// Get the selected simulation type from the user

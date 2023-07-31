@@ -16,21 +16,21 @@ func (t SmoothLifeSimulationType) NewSimulation(config common.Config) Simulation
 
 // SmoothLifeSimulation represents the SmoothLife simulation.
 type SmoothLifeSimulation struct {
-	Config        common.Config
-	Grid          [][]float64
-	GridDiff      [][]float64
-	GridHistory   [][][]float64
-	State    bool
+	Config      common.Config
+	Grid        [][]float64
+	GridDiff    [][]float64
+	GridHistory [][][]float64
+	State       bool
 }
 
 // NewSmoothLifeSimulation creates a new instance of the SmoothLife simulation.
 func NewSmoothLifeSimulation(config common.Config) Simulation {
 	return &SmoothLifeSimulation{
-		Config:        config,
-		Grid:          nil,
-		GridDiff:      nil,
-		GridHistory:   make([][][]float64, 0),
-		State:    false,
+		Config:      config,
+		Grid:        nil,
+		GridDiff:    nil,
+		GridHistory: make([][][]float64, 0),
+		State:       false,
 	}
 }
 

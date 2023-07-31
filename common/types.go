@@ -19,4 +19,3 @@ const LevelString = " .-=coaA@#"
 
 // LevelCount is the number of levels in the LevelString.
 const LevelCount = len(LevelString) - 1
-

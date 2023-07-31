@@ -1,43 +1,56 @@
-# Smooth Life - Reaction-Diffusion Simulation
+# Cellular Automaton
 
-This is a Go program that implements the "Smooth Life" simulation, a variant of Conway's Game of Life using the reaction-diffusion model. The reaction-diffusion model is a mathematical model used to describe the behavior of certain chemical reactions in space and time. The simulation is displayed on the terminal using characters to represent different concentrations.
+<!--toc:start-->
+- [Cellular Automaton](#cellular-automaton)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Available Simulation Types](#available-simulation-types)
+<!--toc:end-->
 
-## Prerequisites
+Cellular Automaton is a simulation project that allows users to explore and visualize various cellular automaton models. The project includes different simulation types, such as the classic Conway's Game of Life and the continuous variant known as SmoothLife. Users can select the simulation type and interact with the simulation through a terminal interface or generate animated visualizations in SVG format.
 
-To run the simulation, you need to have Go (Golang) installed on your system. If you haven't installed Go yet, you can download and install it from the official Go website: https://golang.org/
+## Installation
 
-## Running the Simulation
-
-1. Clone or download this repository to your local machine.
-
-2. Open a terminal or command prompt and navigate to the project's root directory.
-
-3. Run the simulation by executing the following command:
+1. Clone the repository to your local machine:
 
 ```
-go run main.go
+git clone https://github.com/malbertzard/cellular-automaton.git
 ```
 
-4. The program will prompt you to enter the grid dimensions for the simulation. You can specify the width and height of the grid. The larger the dimensions, the longer the simulation will take to complete.
+2. Change into the project directory:
 
-5. The simulation will start, and the terminal will display the evolving patterns based on the reaction-diffusion model using characters.
+```
+cd cellular-automaton
+```
 
-6. The simulation will continue until all cells in the grid have reached the end state (value 0), at which point it will print a message indicating the simulation has finished.
+3. Build the project (if required):
 
-## Customizing the Simulation
+```
+go build
+```
 
-You can modify the default configuration parameters in the `DefaultConfig` variable to experiment with different simulations. The configuration parameters control various aspects of the reaction-diffusion model, such as the influence radius, alpha values, thresholds, and time step (dt).
+## Usage
 
-Note: Modifying the configuration parameters may result in different patterns and behaviors in the simulation.
+1. Run the main executable:
 
-## Exiting the Simulation
+```
+./cellular-automaton
+```
 
-The simulation will automatically exit once all cells in the grid have reached the end state (value 0). Alternatively, you can interrupt the simulation by pressing `Ctrl + C` in the terminal.
+2. The application will prompt you to enter grid dimensions for the simulation.
 
-## License
+3. Select a simulation type from the available options (e.g., SmoothLife, Conway's Game of Life).
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+4. The simulation will start, and you can observe the changes in the grid over time.
 
-## Acknowledgments
+5. If the simulation reaches the end state (all cells have value 0), the program will display a message indicating the completion.
 
-The simulation code is based on the reaction-diffusion model and its implementation, inspired by various resources and research on reaction-diffusion systems. The initial version of the code might have been adapted from a specific source, but it has been modified and generalized for this repository.
+6. The simulation output will be displayed in the terminal in real-time.
+
+7. An SVG animation will be generated and saved to the output directory upon completion of the simulation.
+
+## Available Simulation Types
+
+1. **SmoothLife**: A continuous variant of Conway's Game of Life that allows for smoother transitions between cell states.
+
+2. **Conway's Game of Life**: A classic cellular automaton that follows simple rules to determine the next state of each cell based on its neighbors.

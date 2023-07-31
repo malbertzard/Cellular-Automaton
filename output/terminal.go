@@ -1,9 +1,8 @@
 package output
 
 import (
-	"fmt"
-
 	"cellular-autometon/common"
+	"fmt"
 )
 
 // TerminalOutput is a struct that implements the OutputInterface for displaying the grid in the terminal.

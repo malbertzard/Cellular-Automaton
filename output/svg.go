@@ -1,11 +1,10 @@
 package output
 
 import (
+	"cellular-autometon/common"
 	"fmt"
 	"os"
 	"strconv"
-
-	"cellular-autometon/common"
 )
 
 // SVGOutput is a struct that implements the SVGOutputInterface for creating an SVG animation.

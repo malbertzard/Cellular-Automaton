@@ -1,4 +1,4 @@
- package simulation
+package simulation
 
 import "cellular-autometon/common"
 
@@ -19,4 +19,3 @@ type Simulation interface {
 type SimulationType interface {
 	NewSimulation(config common.Config) Simulation
 }
-

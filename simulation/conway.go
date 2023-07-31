@@ -14,21 +14,21 @@ func (c ConwaySimulationType) NewSimulation(config common.Config) Simulation {
 
 // ConwaySimulation represents the Conway's Game of Life simulation.
 type ConwaySimulation struct {
-	Config        common.Config
-	Grid          [][]float64
-	NextGrid      [][]float64
-	GridHistory   [][][]float64
-	State    bool
+	Config      common.Config
+	Grid        [][]float64
+	NextGrid    [][]float64
+	GridHistory [][][]float64
+	State       bool
 }
 
 // NewConwaySimulation creates a new instance of Conway's Game of Life simulation.
 func NewConwaySimulation(config common.Config) Simulation {
 	return &ConwaySimulation{
-		Config:        config,
-		Grid:          nil,
-		NextGrid:      nil,
-		GridHistory:   make([][][]float64, 0),
-		State:    false,
+		Config:      config,
+		Grid:        nil,
+		NextGrid:    nil,
+		GridHistory: make([][][]float64, 0),
+		State:       false,
 	}
 }
 
@@ -135,4 +135,3 @@ func (c *ConwaySimulation) GetGridHistory() [][][]float64 {
 func (c *ConwaySimulation) AddGridToHistory(grid [][]float64) {
 	c.GridHistory = append(c.GridHistory, grid)
 }
-
