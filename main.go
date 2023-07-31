@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -11,6 +13,97 @@ const (
 	LevelString = " .-=coaA@#"
 	LevelCount  = len(LevelString) - 1
 )
+
+// OutputInterface defines the interface for displaying the grid and handling simulation completion.
+type OutputInterface interface {
+	Display(grid [][]float64)
+	SimulationFinished()
+}
+
+// TerminalOutput is a struct that implements the OutputInterface for displaying the grid in the terminal.
+type TerminalOutput struct{}
+
+// Display implements the OutputInterface to show the grid in the terminal.
+func (t TerminalOutput) Display(grid [][]float64) {
+	for y := 0; y < len(grid); y++ {
+		for x := 0; x < len(grid[y]); x++ {
+			c := LevelString[int(grid[y][x]*float64(LevelCount))]
+			fmt.Printf("%c%c", c, c)
+		}
+		fmt.Println()
+	}
+}
+
+// SimulationFinished implements the OutputInterface to notify the end of the simulation in the terminal.
+func (t TerminalOutput) SimulationFinished() {
+	fmt.Println("Simulation finished. All cells have reached the end state (value 0).")
+}
+
+// SVGOutputInterface defines the interface for creating an SVG animation.
+type SVGOutputInterface interface {
+	GenerateSVGAnimation(gridHistory [][][]float64, config Config)
+}
+
+// SVGOutput is a struct that implements the SVGOutputInterface for creating an SVG animation.
+type SVGOutput struct{}
+
+// GenerateSVGAnimation implements the SVGOutputInterface to create an SVG animation.
+func (s SVGOutput) GenerateSVGAnimation(gridHistory [][][]float64, config Config) {
+	// Create the SVG header
+	svgHeader := fmt.Sprintf(
+		`<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d">`,
+		config.Width, config.Height,
+	)
+
+	// Calculate the maximum value in the grid history for normalization
+	maxValue := 0.0
+	for _, grid := range gridHistory {
+		for y := 0; y < config.Height; y++ {
+			for x := 0; x < config.Width; x++ {
+				if grid[y][x] > maxValue {
+					maxValue = grid[y][x]
+				}
+			}
+		}
+	}
+
+	// Create the SVG frames for each time step in gridHistory
+	var svgFrames string
+	for frameIndex, grid := range gridHistory {
+		frame := fmt.Sprintf(`<g display="%s" fill="none">`, strconv.Itoa(frameIndex*100))
+
+		for y := 0; y < config.Height; y++ {
+			for x := 0; x < config.Width; x++ {
+				// Calculate the normalized value for color
+				normalizedValue := grid[y][x] / maxValue
+				// Convert the normalized value to a color (here, we'll use a blue-to-red gradient)
+				greyValue := int(255 * normalizedValue)
+				color := fmt.Sprintf("#%02x%02x%02x", greyValue, greyValue, greyValue)
+				// Define the SVG rectangle for the cell with the calculated color
+				rect := fmt.Sprintf(`<rect x="%d" y="%d" width="1" height="1" fill="%s" />`, x, y, color)
+				frame += rect
+			}
+		}
+
+		frame += "</g>"
+		svgFrames += frame
+	}
+
+	// Create the SVG footer
+	svgFooter := "</svg>"
+
+	// Combine the header, frames, and footer to complete the SVG code
+	svgCode := svgHeader + svgFrames + svgFooter
+
+	// Save the SVG code to a file named "animation.svg"
+	err := os.WriteFile("animation.svg", []byte(svgCode), 0644)
+	if err != nil {
+		fmt.Println("Error writing SVG animation to file:", err)
+		return
+	}
+
+	fmt.Println("SVG animation generated. Check 'animation.svg' in the current directory.")
+}
 
 // Config holds the configuration parameters for the reaction-diffusion simulation
 type Config struct {
@@ -64,17 +157,6 @@ func initializeGrid(config Config) {
 			y := dy + config.Height/2 - h/2
 			Grid[y][x] = randFloat()
 		}
-	}
-}
-
-// Display the grid with appropriate characters based on concentration levels
-func displayGrid(grid [][]float64) {
-	for y := 0; y < len(grid); y++ {
-		for x := 0; x < len(grid[y]); x++ {
-			c := LevelString[int(grid[y][x]*float64(LevelCount))]
-			fmt.Printf("%c%c", c, c)
-		}
-		fmt.Println()
 	}
 }
 
@@ -171,7 +253,7 @@ func isEndState(grid [][]float64, done chan<- struct{}) {
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
+	rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	// Terminal dialog to set grid dimensions
 	fmt.Println("Enter grid dimensions for the reaction-diffusion simulation:")
@@ -202,16 +284,35 @@ func main() {
 		}
 	}()
 
+	// Create an instance of TerminalOutput to use as the output interface
+	terminalOutput := TerminalOutput{}
+	svgOutput := SVGOutput{}
+
 	// Perform the simulation and display the grid
+	var gridHistory [][][]float64
 	for {
 		computeGridDiff(config)
 		applyGridDiff(config)
 
-		displayGrid(Grid)
+		// Store the current state of the grid in the history
+		currentGrid := make([][]float64, config.Height)
+		for i := range currentGrid {
+			currentGrid[i] = make([]float64, config.Width)
+			copy(currentGrid[i], Grid[i])
+		}
+		gridHistory = append(gridHistory, currentGrid)
+
+		// Use the terminal output interface to display the grid
+		terminalOutput.Display(Grid)
 
 		select {
 		case <-done:
-			fmt.Println("Simulation finished. All cells have reached the end state (value 0).")
+			// Notify the simulation completion through the terminal output interface
+			terminalOutput.SimulationFinished()
+
+			// Generate the SVG animation using the SVG output interface
+			svgOutput.GenerateSVGAnimation(gridHistory, config)
+
 			return
 		default:
 			// Continue with the simulation
@@ -221,3 +322,4 @@ func main() {
 		time.Sleep(100 * time.Millisecond)
 	}
 }
+
